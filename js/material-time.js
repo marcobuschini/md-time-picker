@@ -13,14 +13,18 @@ var app = angular
                     var cssColor = $element.css('color');
                     var cssBorderColor = $element.css('border-color');
                     var stage = new createjs.Stage($element.attr('id'));
+                    parent.hours = [];
+                    parent.hours.length = 25;
+                    parent.minutes = [];
+                    parent.minutes.length = 13;
                     $scope.hour = '00';
                     $scope.minute = '00';
                     this.drawHours = function () {
-                        var circle = new createjs.Shape();
-                        circle.graphics.beginStroke(cssBorderColor).drawCircle(0, 0, radius * 0.9);
-                        circle.x = radius;
-                        circle.y = radius;
-                        stage.addChild(circle);
+                        parent.hours[0] = new createjs.Shape();
+                        parent.hours[0].graphics.beginStroke(cssBorderColor).drawCircle(0, 0, radius * 0.9);
+                        parent.hours[0].x = radius;
+                        parent.hours[0].y = radius;
+                        stage.addChild(parent.hours[0]);
                         for (var i = 1; i <= 12; i++) {
                             var text = new createjs.Text(i, radius * 0.1 + 'px sansserif', cssBorderColor);
                             var hit = new createjs.Shape();
@@ -32,6 +36,7 @@ var app = angular
                                     $scope.hour = event.currentTarget.text;
                                 });
                                 parent.drawHour($scope.hour);
+                                parent.eraseHours();
                             });
                             var m2d = new createjs.Matrix2D();
                             m2d.identity()
@@ -43,6 +48,7 @@ var app = angular
                             text.textAlign = 'center';
                             var d = m2d.decompose(text);
                             text.setTransform(d.x, d.y, d.scaleX, d.scaleY, d.rotation, d.skewX, d.skewY, d.regX, d.regY);
+                            parent.hours[i] = text;
                             stage.addChild(text);
                         }
                         for (var i = 13; i <= 24; i++) {
@@ -58,6 +64,7 @@ var app = angular
                                 if ($scope.hour === '00')
                                     $scope.hour = '24';
                                 parent.drawHour($scope.hour);
+                                parent.eraseHours();
                             });
                             var m2d = new createjs.Matrix2D();
                             m2d.identity()
@@ -69,9 +76,22 @@ var app = angular
                             text.textAlign = 'center';
                             var d = m2d.decompose(text);
                             text.setTransform(d.x, d.y, d.scaleX, d.scaleY, d.rotation, d.skewX, d.skewY, d.regX, d.regY);
+                            parent.hours[i] = text;
                             stage.addChild(text);
                         }
                         stage.update();
+                    };
+                    this.eraseHours = function () {
+                        for (var i = 0; i<parent.hours.length; i++) {
+                            stage.removeChild(parent.hours[i]);
+                        }
+                        stage.removeChild(parent.hour);
+                        stage.removeChild(parent.hourTick);
+                        stage.addChild(parent.minute);
+                        stage.addChild(parent.minuteTick);
+                        stage.update();
+                        parent.drawMinutes();
+                        parent.drawMinute(0);
                     };
                     this.drawHour = function (i) {
                         i = i === 0 ? 24 : i;
@@ -90,11 +110,11 @@ var app = angular
                         stage.update();
                     };
                     this.drawMinutes = function () {
-                        var circle = new createjs.Shape();
-                        circle.graphics.beginStroke(cssBorderColor).drawCircle(0, 0, radius * 0.9);
-                        circle.x = radius;
-                        circle.y = radius;
-                        stage.addChild(circle);
+                        parent.minutes[0] = new createjs.Shape();
+                        parent.minutes[0].graphics.beginStroke(cssBorderColor).drawCircle(0, 0, radius * 0.9);
+                        parent.minutes[0].x = radius;
+                        parent.minutes[0].y = radius;
+                        stage.addChild(parent.minutes[0]);
                         for (var i = 1; i <=12; i++) {
                             var text = new createjs.Text(i==12?'00':i*5, radius * 0.075 + 'px sansserif', cssBorderColor);
                             var hit = new createjs.Shape();
@@ -105,6 +125,7 @@ var app = angular
                                 $scope.$apply(function() {
                                     $scope.minute = event.currentTarget.text;
                                 });
+                                parent.eraseHours();
                                 parent.drawMinute($scope.minute);
                             });
                             var m2d = new createjs.Matrix2D();
@@ -117,6 +138,7 @@ var app = angular
                             text.textAlign = 'center';
                             var d = m2d.decompose(text);
                             text.setTransform(d.x, d.y, d.scaleX, d.scaleY, d.rotation, d.skewX, d.skewY, d.regX, d.regY);
+                            parent.minutes[i] = text;
                             stage.addChild(text);
                         }
                         stage.update();
@@ -129,12 +151,12 @@ var app = angular
                                 .rotate((i/5 + 1.5) * 360 / 12)
                                 .translate(-radius / 2, -radius / 2)
                                 .rotate((-i/5 - 1.5) * 360 / 12);
-                        var d = m2d.decompose(parent.hour);
-                        parent.hour.x = d.x;
-                        parent.hour.y = d.y;
-                        parent.hour.radius = radius * 0.9;
-                        parent.hourTick.graphics.command.x = d.x;
-                        parent.hourTick.graphics.command.y = d.y;
+                        var d = m2d.decompose(parent.minute);
+                        parent.minute.x = d.x;
+                        parent.minute.y = d.y;
+                        parent.minute.radius = radius * 0.9;
+                        parent.minuteTick.graphics.command.x = d.x;
+                        parent.minuteTick.graphics.command.y = d.y;
                         stage.update();
                     };
 
@@ -143,10 +165,15 @@ var app = angular
                     var hourTk = new createjs.Graphics().beginStroke(cssColor).moveTo(radius, radius).lineTo(0, radius * 0.9);
                     this.hourTick = new createjs.Shape(hourTk);
 
+                    var minuteCir = new createjs.Graphics().beginFill(cssColor).drawCircle(0, 0, radius * 0.08);
+                    this.minute = new createjs.Shape(minuteCir);
+                    var minuteTk = new createjs.Graphics().beginStroke(cssColor).moveTo(radius, radius).lineTo(0, radius * 0.9);
+                    this.minuteTick = new createjs.Shape(minuteTk);
+
                     stage.addChild(this.hour);
                     stage.addChild(this.hourTick);
-                    this.drawMinutes();
-                    this.drawMinute(0);
+                    this.drawHours();
+                    this.drawHour(0);
                 }
             };
         });
