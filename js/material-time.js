@@ -3,13 +3,18 @@ var app = angular
         .directive('mdTimePicker', function () {
             return {
                 restrict: 'A',
-                controller: function ($element) {
+                scope: {
+                    hour: '=?',
+                    minute: '=?'
+                },
+                controller: function ($element, $scope) {
                     var radius = $element.prop('offsetWidth') / 2;
                     var parent = this;
                     var cssColor = $element.css('color');
                     var cssBorderColor = $element.css('border-color');
                     var stage = new createjs.Stage($element.attr('id'));
-                    parent.selected = 0;
+                    $scope.hour = '00';
+                    $scope.minute = '00';
                     this.drawHours = function () {
                         var circle = new createjs.Shape();
                         circle.graphics.beginStroke(cssBorderColor).drawCircle(0, 0, radius * 0.9);
@@ -23,8 +28,10 @@ var app = angular
                             text.hitArea = hit;
                             var j = i;
                             text.addEventListener("click", function(event) {
-                                parent.selected = event.currentTarget.text;
-                                parent.drawHour(parent.selected);
+                                $scope.$apply( function() {
+                                    $scope.hour = event.currentTarget.text;
+                                });
+                                parent.drawHour($scope.hour);
                             });
                             var m2d = new createjs.Matrix2D();
                             m2d.identity()
@@ -45,10 +52,12 @@ var app = angular
                             text.hitArea = hit;
                             var j = i;
                             text.addEventListener("click", function(event) {
-                                parent.selected = event.currentTarget.text;
-                                if (parent.selected === '00')
-                                    parent.selected = '24';
-                                parent.drawHour(parent.selected);
+                                $scope.$apply( function() {
+                                    $scope.hour = event.currentTarget.text;
+                                });
+                                if ($scope.hour === '00')
+                                    $scope.hour = '24';
+                                parent.drawHour($scope.hour);
                             });
                             var m2d = new createjs.Matrix2D();
                             m2d.identity()
