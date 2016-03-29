@@ -28,7 +28,7 @@ var app = angular
                             text.hitArea = hit;
                             var j = i;
                             text.addEventListener("click", function(event) {
-                                $scope.$apply( function() {
+                                $scope.$apply(function() {
                                     $scope.hour = event.currentTarget.text;
                                 });
                                 parent.drawHour($scope.hour);
@@ -52,7 +52,7 @@ var app = angular
                             text.hitArea = hit;
                             var j = i;
                             text.addEventListener("click", function(event) {
-                                $scope.$apply( function() {
+                                $scope.$apply(function() {
                                     $scope.hour = event.currentTarget.text;
                                 });
                                 if ($scope.hour === '00')
@@ -89,6 +89,54 @@ var app = angular
                         parent.hourTick.graphics.command.y = d.y;
                         stage.update();
                     };
+                    this.drawMinutes = function () {
+                        var circle = new createjs.Shape();
+                        circle.graphics.beginStroke(cssBorderColor).drawCircle(0, 0, radius * 0.9);
+                        circle.x = radius;
+                        circle.y = radius;
+                        stage.addChild(circle);
+                        for (var i = 1; i <=12; i++) {
+                            var text = new createjs.Text(i==12?'00':i*5, radius * 0.075 + 'px sansserif', cssBorderColor);
+                            var hit = new createjs.Shape();
+                            hit.graphics.beginFill('#000').drawCircle(0, 0, radius * 0.1)
+                            text.hitArea = hit;
+                            var j = i;
+                            text.addEventListener("click", function(event) {
+                                $scope.$apply(function() {
+                                    $scope.minute = event.currentTarget.text;
+                                });
+                                parent.drawMinute($scope.minute);
+                            });
+                            var m2d = new createjs.Matrix2D();
+                            m2d.identity()
+                                    .translate(radius, radius)
+                                    .rotate((i + 1.5) * 360 / 12)
+                                    .translate(-radius / 2, -radius / 2)
+                                    .rotate((-i - 1.5) * 360 / 12);
+                            text.textBaseline = 'middle';
+                            text.textAlign = 'center';
+                            var d = m2d.decompose(text);
+                            text.setTransform(d.x, d.y, d.scaleX, d.scaleY, d.rotation, d.skewX, d.skewY, d.regX, d.regY);
+                            stage.addChild(text);
+                        }
+                        stage.update();
+                    };
+                    this.drawMinute = function (i) {
+                        i = i === 60 ? 0 : i;
+                        var m2d = new createjs.Matrix2D();
+                        m2d.identity()
+                                .translate(radius, radius)
+                                .rotate((i/5 + 1.5) * 360 / 12)
+                                .translate(-radius / 2, -radius / 2)
+                                .rotate((-i/5 - 1.5) * 360 / 12);
+                        var d = m2d.decompose(parent.hour);
+                        parent.hour.x = d.x;
+                        parent.hour.y = d.y;
+                        parent.hour.radius = radius * 0.9;
+                        parent.hourTick.graphics.command.x = d.x;
+                        parent.hourTick.graphics.command.y = d.y;
+                        stage.update();
+                    };
 
                     var hourCir = new createjs.Graphics().beginFill(cssColor).drawCircle(0, 0, radius * 0.08);
                     this.hour = new createjs.Shape(hourCir);
@@ -97,8 +145,8 @@ var app = angular
 
                     stage.addChild(this.hour);
                     stage.addChild(this.hourTick);
-                    this.drawHours();
-                    this.drawHour(0);
+                    this.drawMinutes();
+                    this.drawMinute(0);
                 }
             };
         });
