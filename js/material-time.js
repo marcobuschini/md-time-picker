@@ -9,6 +9,7 @@ var app = angular
                     var cssColor = $element.css('color');
                     var cssBorderColor = $element.css('border-color');
                     var stage = new createjs.Stage($element.attr('id'));
+                    parent.selected = 0;
                     this.drawHours = function () {
                         var circle = new createjs.Shape();
                         circle.graphics.beginStroke(cssBorderColor).drawCircle(0, 0, radius * 0.9);
@@ -17,6 +18,14 @@ var app = angular
                         stage.addChild(circle);
                         for (var i = 1; i <= 12; i++) {
                             var text = new createjs.Text(i, radius * 0.1 + 'px sansserif', cssBorderColor);
+                            var hit = new createjs.Shape();
+                            hit.graphics.beginFill('#000').drawCircle(0, 0, radius * 0.1)
+                            text.hitArea = hit;
+                            var j = i;
+                            text.addEventListener("click", function(event) {
+                                parent.selected = event.currentTarget.text;
+                                parent.drawHour(parent.selected);
+                            });
                             var m2d = new createjs.Matrix2D();
                             m2d.identity()
                                     .translate(radius, radius)
@@ -31,6 +40,16 @@ var app = angular
                         }
                         for (var i = 13; i <= 24; i++) {
                             var text = new createjs.Text(i == 24 ? '00' : i, radius * 0.075 + 'px sansserif', cssBorderColor);
+                            var hit = new createjs.Shape();
+                            hit.graphics.beginFill('#000').drawCircle(0, 0, radius * 0.075)
+                            text.hitArea = hit;
+                            var j = i;
+                            text.addEventListener("click", function(event) {
+                                parent.selected = event.currentTarget.text;
+                                if (parent.selected === '00')
+                                    parent.selected = '24';
+                                parent.drawHour(parent.selected);
+                            });
                             var m2d = new createjs.Matrix2D();
                             m2d.identity()
                                     .translate(radius, radius)
