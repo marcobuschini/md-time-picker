@@ -8,8 +8,17 @@ and open the template in the editor.
     Author     : marcobuschini
 */
 
-canvas[md-time-picker] {
-    color: lightsteelblue;
-    border-color: graytext;
-    background-color: white;
+div.clock {
+    position:relative;
+    height: 400px;
+    width:400px;
+}
+ 
+.clock canvas {
+    width: 100%;
+    height: 100%;        
+    z-index: 100;  /* <- higher than your canvases if it needs to go on top */
+    position: absolute;
+    left: 0;
+    top: 0;
 }

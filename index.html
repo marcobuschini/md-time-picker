@@ -8,7 +8,7 @@
         <link href="css/material-time.css" rel="stylesheet" type="text/css">
     </head>
     <body>
-        <canvas id="myClock" width="400px" height="400px" md-time-picker hour="selectedHour" minute="selectedMinute"></canvas>
+        <md-time-picker canvas-id="picker" width="400px" height="400px" hour="selectedHour" minute="selectedMinute"></md-time-picker>
         <p>Selected {{selectedHour}}:{{selectedMinute}}</p>
 
         <script src="node_modules/jquery/dist/jquery.js"></script>
@@ -17,6 +17,7 @@
         <script src="node_modules/angular-aria/angular-aria.js"></script>
         <script src="node_modules/angular-material/angular-material.js"></script>
         <script src="js/easeljs-0.8.2.combined.js"></script>
+        <script src="js/Length.js"></script>
         <script src="js/material-time.js"></script>
     </body>
 </html>

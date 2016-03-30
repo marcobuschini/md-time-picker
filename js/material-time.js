@@ -2,17 +2,20 @@ var app = angular
         .module('MaterialClock', ['ngMaterial'])
         .directive('mdTimePicker', function () {
             return {
-                restrict: 'A',
+                restrict: 'E',
                 scope: {
                     hour: '=?',
-                    minute: '=?'
+                    minute: '=?',
+                    canvasId: '@'
                 },
+                template: '<div class="clock"><canvas id="clock-{{canvasId}}"></canvas></div>',
                 controller: function ($element, $scope) {
-                    var radius = $element.prop('offsetWidth') / 2;
+                    var canvas = $element[0].childNodes[0].childNodes[0];
+                    var radius = canvas.height;// / 2;
                     var parent = this;
                     var cssColor = $element.css('color');
                     var cssBorderColor = $element.css('border-color');
-                    var stage = new createjs.Stage($element.attr('id'));
+                    var stage = new createjs.Stage(canvas);//'clock-'+$scope.canvasId);
                     parent.hours = [];
                     parent.hours.length = 25;
                     parent.minutes = [];
