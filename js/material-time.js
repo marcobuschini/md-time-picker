@@ -39,7 +39,7 @@ var app = angular
                                 parent.eraseHours();
                             });
                             var m2d = new createjs.Matrix2D();
-                            m2d.identity()
+                            m2d
                                     .translate(radius, radius)
                                     .rotate((i + 1.5) * 360 / 12)
                                     .translate(-radius * 0.75 / 2, -radius * 0.75 / 2)
@@ -67,7 +67,7 @@ var app = angular
                                 parent.eraseHours();
                             });
                             var m2d = new createjs.Matrix2D();
-                            m2d.identity()
+                            m2d
                                     .translate(radius, radius)
                                     .rotate((i + 1.5) * 360 / 12)
                                     .translate(-radius / 2, -radius / 2)
@@ -96,7 +96,7 @@ var app = angular
                     this.drawHour = function (i) {
                         i = i === 0 ? 24 : i;
                         var m2d = new createjs.Matrix2D();
-                        m2d.identity()
+                        m2d
                                 .translate(radius, radius)
                                 .rotate((i + 1.5) * 360 / 12)
                                 .translate(-radius * (i <= 12 ? 0.75 : 1) / 2, -radius * (i <= 12 ? 0.75 : 1) / 2)
@@ -129,7 +129,7 @@ var app = angular
                                 parent.drawMinute($scope.minute);
                             });
                             var m2d = new createjs.Matrix2D();
-                            m2d.identity()
+                            m2d
                                     .translate(radius, radius)
                                     .rotate((i + 1.5) * 360 / 12)
                                     .translate(-radius / 2, -radius / 2)
@@ -146,7 +146,7 @@ var app = angular
                     this.drawMinute = function (i) {
                         i = i === 60 ? 0 : i;
                         var m2d = new createjs.Matrix2D();
-                        m2d.identity()
+                        m2d
                                 .translate(radius, radius)
                                 .rotate((i/5 + 1.5) * 360 / 12)
                                 .translate(-radius / 2, -radius / 2)
